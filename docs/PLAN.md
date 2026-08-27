@@ -55,10 +55,11 @@ decision.
 **Exit criteria:** Playwright or API test demonstrates submit → interrupt →
 resume → publish flow.
 
-### Phase 4 — API + observability
-- SSE stream for graph events.
-- Structured logging with `structlog`.
-- LangSmith tracing integration via `zarreh_agentkit`.
+### Phase 4 — API + observability ✅
+- [x] SSE stream for graph events (`POST /route/stream`).
+- [x] Structured logging with `structlog`.
+- [x] LangSmith tracing integration via `zarreh_agentkit` (enabled when
+`ROUTER_LANGSMITH_API_KEY` is set).
 
 **Exit criteria:** `/route` stream emits node-enter/exit events; traces visible
 in LangSmith project.

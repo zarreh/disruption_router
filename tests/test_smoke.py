@@ -102,3 +102,17 @@ def test_review_queue_lists_and_resumes() -> None:
     resume = client.post(f"/reviews/{thread_id}", json={"decision": "approve"})
     assert resume.status_code == 200
     assert resume.json()["thread_id"] == thread_id
+
+
+def test_route_stream_sse() -> None:
+    event = DisruptionEvent(
+        shipment_id="S-STREAM-001",
+        event_type="delay",
+        severity="low",
+        description="Minor delay",
+    )
+    with client.stream("POST", "/route/stream", json=event.model_dump()) as response:
+        assert response.status_code == 200
+        chunks = [chunk for chunk in response.iter_text() if chunk.strip()]
+        assert len(chunks) > 0
+        assert any("done" in chunk for chunk in chunks)

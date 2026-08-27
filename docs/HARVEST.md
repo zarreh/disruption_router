@@ -42,6 +42,15 @@ for snapshots with pending `interrupt()` tasks.
 lists pending reviews and submits decisions.
 - Added API test demonstrating submit → interrupt → resume → publish flow.
 
+## 2026-08-27 — Phase 4 observability
+
+- Added `src/router/observability.py` with structlog JSON configuration and
+startup/shutdown logging in the FastAPI lifespan.
+- Added `POST /route/stream` SSE endpoint streaming `graph.stream(...)` node
+updates.
+- LangSmith tracing is inherited from `zarreh_agentkit.AgentSettings`; active
+when `ROUTER_LANGSMITH_API_KEY` and `ROUTER_LANGSMITH_PROJECT` are set.
+
 ## Harvested patterns
 
 - A2's `AgentSettings` from `zarreh_agentkit` gives us OpenAI + LangSmith env
