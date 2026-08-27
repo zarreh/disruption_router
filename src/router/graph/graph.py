@@ -25,12 +25,16 @@ def retrieve(state: RouterState) -> dict[str, Any]:
     event = state.event
     if event is None:
         raise ValueError("No disruption event in state")
-    _ = lookup_clauses(event.event_type, event.severity)
+    _ = lookup_clauses(event.event_type, event.severity, event=event)
     return {"candidate_action": None}
 
 
 def _deterministic_route(event: Any, matches: list[Any]) -> RouteRecommendation:
-    """Fallback router when LLM is unavailable."""
+    """Fallback router when LLM is unavailable.
+
+    Selects the action from the highest-priority matched clause. If several
+    clauses share the top priority, uses a simple majority vote among them.
+    """
     if not matches:
         return RouteRecommendation(
             action="monitor",
@@ -40,7 +44,9 @@ def _deterministic_route(event: Any, matches: list[Any]) -> RouteRecommendation:
             needs_human_review=True,
         )
 
-    actions = [m.action for m in matches]
+    top_priority = max(m.priority for m in matches)
+    top_matches = [m for m in matches if m.priority == top_priority]
+    actions = [m.action for m in top_matches]
     chosen_action = max(set(actions), key=actions.count)
     confidence = 0.9 if event.severity == "critical" else 0.75
     needs_review = event.severity in {"high", "critical"} or confidence < 0.8
@@ -48,7 +54,7 @@ def _deterministic_route(event: Any, matches: list[Any]) -> RouteRecommendation:
     return RouteRecommendation(
         action=chosen_action,
         confidence=confidence,
-        justification=f"Selected {chosen_action} based on {len(matches)} matched rulebook clauses.",
+        justification=f"Selected {chosen_action} from highest-priority clauses.",
         matched_clauses=matches,
         needs_human_review=needs_review,
     )
@@ -64,7 +70,7 @@ def route(state: RouterState) -> dict[str, Any]:
     if event is None:
         raise ValueError("No disruption event in state")
 
-    matches = lookup_clauses(event.event_type, event.severity)
+    matches = lookup_clauses(event.event_type, event.severity, event=event)
     llm = get_llm()
 
     if llm is None:
@@ -129,7 +135,7 @@ def judge_grounding(state: RouterState) -> dict[str, Any]:
             "grounding_feedback": "Missing event or recommendation",
         }
 
-    matches = lookup_clauses(event.event_type, event.severity)
+    matches = lookup_clauses(event.event_type, event.severity, event=event)
     matched_ids = {m.clause_id for m in matches}
     cited_ids = {m.clause_id for m in rec.matched_clauses}
 

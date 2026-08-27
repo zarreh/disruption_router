@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "source": "reference/logistics_policy_rulebook.txt",
-  "generated_at": "2026-08-27T16:39:17.510358+00:00",
+  "generated_at": "2026-08-27T16:57:26.470976+00:00",
   "policies": [
     {
       "id": "POL-001",
@@ -48,12 +48,23 @@
   ],
   "clauses": [
     {
+      "id": "C-000",
+      "policy_id": "POL-000",
+      "text": "Low-severity delay with no specific policy trigger: monitor.",
+      "action": "monitor",
+      "event_types": "delay",
+      "severities": "low",
+      "priority": 0,
+      "conditions": {}
+    },
+    {
       "id": "C-001A",
       "policy_id": "POL-001",
       "text": "Weather-related delay under 3 days: monitor status and hold at current hub.",
       "action": "monitor",
       "event_types": "weather,delay",
       "severities": "low",
+      "priority": 5,
       "conditions": {
         "max_delay_days": 2
       }
@@ -65,6 +76,7 @@
       "action": "reroute",
       "event_types": "weather,delay",
       "severities": "medium",
+      "priority": 10,
       "conditions": {
         "min_delay_days": 3,
         "max_delay_days": 5
@@ -77,6 +89,7 @@
       "action": "escalate_human",
       "event_types": "weather,delay",
       "severities": "high,critical",
+      "priority": 20,
       "conditions": {
         "min_delay_days": 6
       }
@@ -88,6 +101,7 @@
       "action": "reroute",
       "event_types": "late_delivery,delay",
       "severities": "medium,high",
+      "priority": 10,
       "conditions": {
         "min_delay_days": 2,
         "max_delay_days": 5
@@ -100,6 +114,7 @@
       "action": "expedite",
       "event_types": "late_delivery,delay",
       "severities": "medium,high",
+      "priority": 3,
       "conditions": {
         "min_delay_days": 2,
         "max_delay_days": 5,
@@ -113,6 +128,7 @@
       "action": "expedite",
       "event_types": "late_delivery,delay",
       "severities": "medium,high,critical",
+      "priority": 20,
       "conditions": {
         "sales_above": 3000
       }
@@ -124,6 +140,7 @@
       "action": "escalate_human",
       "event_types": "canceled",
       "severities": "high,critical",
+      "priority": 20,
       "conditions": {}
     },
     {
@@ -133,6 +150,7 @@
       "action": "escalate_human",
       "event_types": "delay,late_delivery",
       "severities": "critical",
+      "priority": 20,
       "conditions": {
         "min_delay_days": 6
       }
@@ -144,6 +162,7 @@
       "action": "escalate_human",
       "event_types": "late_delivery,delay",
       "severities": "high,critical",
+      "priority": 15,
       "conditions": {
         "sales_above": 3000
       }
@@ -155,6 +174,7 @@
       "action": "escalate_human",
       "event_types": "sla_breach",
       "severities": "critical",
+      "priority": 20,
       "conditions": {
         "customer_segment": "Corporate",
         "hours_to_breach": 4
@@ -165,8 +185,9 @@
       "policy_id": "POL-004",
       "text": "Same Day shipping mode SLA breach: expedite.",
       "action": "expedite",
-      "event_types": "sla_breach,delay",
+      "event_types": "sla_breach",
       "severities": "high,critical",
+      "priority": 10,
       "conditions": {
         "shipping_mode": "Same Day"
       }
@@ -176,8 +197,9 @@
       "policy_id": "POL-004",
       "text": "First Class shipping mode SLA breach: expedite.",
       "action": "expedite",
-      "event_types": "sla_breach,delay",
+      "event_types": "sla_breach",
       "severities": "high",
+      "priority": 10,
       "conditions": {
         "shipping_mode": "First Class"
       }
@@ -187,8 +209,9 @@
       "policy_id": "POL-004",
       "text": "Second Class shipping mode SLA breach: reroute.",
       "action": "reroute",
-      "event_types": "sla_breach,delay",
+      "event_types": "sla_breach",
       "severities": "medium,high",
+      "priority": 10,
       "conditions": {
         "shipping_mode": "Second Class"
       }
@@ -198,8 +221,9 @@
       "policy_id": "POL-004",
       "text": "Standard Class shipping mode SLA breach: hold.",
       "action": "hold",
-      "event_types": "sla_breach,delay",
+      "event_types": "sla_breach",
       "severities": "low,medium",
+      "priority": 10,
       "conditions": {
         "shipping_mode": "Standard Class"
       }
@@ -211,6 +235,7 @@
       "action": "monitor",
       "event_types": "delay",
       "severities": "low,medium",
+      "priority": 5,
       "conditions": {
         "days_to_tolerance": 1
       }
@@ -222,6 +247,7 @@
       "action": "reroute",
       "event_types": "routing_conflict,capacity_issue",
       "severities": "medium,high",
+      "priority": 10,
       "conditions": {
         "customer_segment": "Corporate"
       }
@@ -233,6 +259,7 @@
       "action": "reroute",
       "event_types": "routing_conflict,capacity_issue,late_delivery",
       "severities": "medium,high",
+      "priority": 10,
       "conditions": {
         "customer_segment": "Home Office",
         "sales_above": 2000
@@ -245,6 +272,7 @@
       "action": "reroute",
       "event_types": "delay,electronics",
       "severities": "medium,high",
+      "priority": 10,
       "conditions": {
         "category": "Electronics",
         "min_delay_days": 3
@@ -257,6 +285,7 @@
       "action": "monitor",
       "event_types": "delay,furniture",
       "severities": "low,medium",
+      "priority": 5,
       "conditions": {
         "category": "Furniture",
         "max_delay_days": 5
@@ -269,6 +298,7 @@
       "action": "expedite",
       "event_types": "delay,clothing",
       "severities": "medium,high",
+      "priority": 5,
       "conditions": {
         "category": "Clothing",
         "days_to_season": 7
@@ -281,6 +311,7 @@
       "action": "monitor",
       "event_types": "delay,sports",
       "severities": "low,medium",
+      "priority": 1,
       "conditions": {
         "category": "Sports"
       }
@@ -292,6 +323,7 @@
       "action": "monitor",
       "event_types": "delay,books",
       "severities": "low",
+      "priority": 1,
       "conditions": {
         "category": "Books"
       }

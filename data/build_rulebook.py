@@ -54,11 +54,25 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
     """
     clauses: list[Clause] = []
 
+    # Generic fallback for low-severity delays with no specific trigger.
+    clauses.append(
+        Clause(
+            id="C-000",
+            priority=0,
+            policy_id="POL-000",
+            text="Low-severity delay with no specific policy trigger: monitor.",
+            action="monitor",
+            event_types="delay",
+            severities="low",
+        )
+    )
+
     # POL-001: Weather Disruption Protocol
     clauses.extend(
         [
             Clause(
                 id="C-001A",
+                priority=5,
                 policy_id="POL-001",
                 text="Weather-related delay under 3 days: monitor status and hold at current hub.",
                 action="monitor",
@@ -68,6 +82,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-001B",
+                priority=10,
                 policy_id="POL-001",
                 text="Weather-related delay 3-5 days: reroute via alternate regional hub.",
                 action="reroute",
@@ -77,6 +92,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-001C",
+                priority=20,
                 policy_id="POL-001",
                 text="Weather-related delay over 5 days: escalate to senior dispatch.",
                 action="escalate_human",
@@ -92,6 +108,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
         [
             Clause(
                 id="C-002A",
+                priority=10,
                 policy_id="POL-002",
                 text="Late delivery 2-5 days with alternate carrier available: reroute.",
                 action="reroute",
@@ -101,6 +118,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-002B",
+                priority=3,
                 policy_id="POL-002",
                 text="Late delivery 2-5 days with no alternate carrier: hold and expedite.",
                 action="expedite",
@@ -110,6 +128,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-002C",
+                priority=20,
                 policy_id="POL-002",
                 text="High-value shipment (sales > $3,000) with late delivery risk: expedite.",
                 action="expedite",
@@ -125,6 +144,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
         [
             Clause(
                 id="C-003A",
+                priority=20,
                 policy_id="POL-003",
                 text="Shipping canceled: management intervention required.",
                 action="escalate_human",
@@ -133,6 +153,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-003B",
+                priority=20,
                 policy_id="POL-003",
                 text="Extreme delay exceeding 5 calendar days: management intervention required.",
                 action="escalate_human",
@@ -142,6 +163,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-003C",
+                priority=15,
                 policy_id="POL-003",
                 text="High-value shipment with late delivery risk: escalate for management review.",
                 action="escalate_human",
@@ -151,6 +173,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-003D",
+                priority=20,
                 policy_id="POL-003",
                 text="Corporate customer SLA breach imminent (<4 hours): escalate immediately.",
                 action="escalate_human",
@@ -166,42 +189,47 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
         [
             Clause(
                 id="C-004A",
+                priority=10,
                 policy_id="POL-004",
                 text="Same Day shipping mode SLA breach: expedite.",
                 action="expedite",
-                event_types="sla_breach,delay",
+                event_types="sla_breach",
                 severities="high,critical",
                 conditions={"shipping_mode": "Same Day"},
             ),
             Clause(
                 id="C-004B",
+                priority=10,
                 policy_id="POL-004",
                 text="First Class shipping mode SLA breach: expedite.",
                 action="expedite",
-                event_types="sla_breach,delay",
+                event_types="sla_breach",
                 severities="high",
                 conditions={"shipping_mode": "First Class"},
             ),
             Clause(
                 id="C-004C",
+                priority=10,
                 policy_id="POL-004",
                 text="Second Class shipping mode SLA breach: reroute.",
                 action="reroute",
-                event_types="sla_breach,delay",
+                event_types="sla_breach",
                 severities="medium,high",
                 conditions={"shipping_mode": "Second Class"},
             ),
             Clause(
                 id="C-004D",
+                priority=10,
                 policy_id="POL-004",
                 text="Standard Class shipping mode SLA breach: hold.",
                 action="hold",
-                event_types="sla_breach,delay",
+                event_types="sla_breach",
                 severities="low,medium",
                 conditions={"shipping_mode": "Standard Class"},
             ),
             Clause(
                 id="C-004E",
+                priority=5,
                 policy_id="POL-004",
                 text=(
                     "Shipment within 1 day of SLA tolerance threshold: "
@@ -220,6 +248,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
         [
             Clause(
                 id="C-005A",
+                priority=10,
                 policy_id="POL-005",
                 text=(
                     "Corporate customer in routing conflict or capacity "
@@ -232,6 +261,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-005B",
+                priority=10,
                 policy_id="POL-005",
                 text="Home Office order over $2,000: inherit Corporate priority handling.",
                 action="reroute",
@@ -247,6 +277,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
         [
             Clause(
                 id="C-006A",
+                priority=10,
                 policy_id="POL-006",
                 text="Electronics delay over 2 days: reroute via temperature-controlled lane.",
                 action="reroute",
@@ -256,6 +287,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-006B",
+                priority=5,
                 policy_id="POL-006",
                 text="Furniture delay up to 5 days: monitor; avoid rerouting due to bulk cost.",
                 action="monitor",
@@ -265,6 +297,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-006C",
+                priority=5,
                 policy_id="POL-006",
                 text="Clothing within 7 days of seasonal transition: expedite.",
                 action="expedite",
@@ -274,6 +307,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-006D",
+                priority=1,
                 policy_id="POL-006",
                 text="Sports goods: follow standard handling procedures.",
                 action="monitor",
@@ -283,6 +317,7 @@ def derive_clauses(policies: list[Policy]) -> list[Clause]:
             ),
             Clause(
                 id="C-006E",
+                priority=1,
                 policy_id="POL-006",
                 text="Books: lowest priority filler capacity on alternate routes.",
                 action="monitor",

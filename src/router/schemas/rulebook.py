@@ -28,6 +28,9 @@ class Clause(BaseModel):
     severities: str = Field(
         ..., description="Comma-separated severity keywords matched against the report"
     )
+    priority: int = Field(
+        default=0, description="Higher value = more specific; used for tie-breaking"
+    )
     conditions: dict[str, str | int | float | bool] = Field(
         default_factory=dict,
         description="Additional numeric or categorical guards (e.g. min_delay_gap, sales_above)",

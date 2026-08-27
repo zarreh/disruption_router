@@ -74,3 +74,5 @@ nav:
           - Index: architecture/decisions/index.md
           - D-A7-1 Structured clause lookup: architecture/decisions/D-A7-1-structured-clause-lookup.md
           - D-A7-2 SQLite SqliteSaver: architecture/decisions/D-A7-2-sqlite-saver.md
+  - Evidence:
+      - Evaluation: evidence/evaluation.md

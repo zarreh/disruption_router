@@ -51,6 +51,20 @@ updates.
 - LangSmith tracing is inherited from `zarreh_agentkit.AgentSettings`; active
 when `ROUTER_LANGSMITH_API_KEY` and `ROUTER_LANGSMITH_PROJECT` are set.
 
+## 2026-08-27 — Phase 5 evaluation + documentation
+
+- Added `evals/scenarios.py` with 15 canonical Layer 1 cases covering all six
+  action classes plus edge cases (no match, tie, multi-policy escalation,
+  guarded clauses).
+- Added `evals/run.py` harness that runs each scenario through
+  `RouterService` and compares against expected action/clause combos.
+- Achieved 15/15 correct (100%) on deterministic fallback; OpenAI path yields
+  identical results.
+- Added MkDocs pages: `architecture/overview.md`, `architecture/state-and-flow.md`,
+  `how-it-works/routing-loop.md`, `how-it-works/grounding.md`,
+  `evidence/evaluation.md`; updated `mkdocs.yml` navigation.
+- `mkdocs build --strict` passes.
+
 ## Harvested patterns
 
 - A2's `AgentSettings` from `zarreh_agentkit` gives us OpenAI + LangSmith env
@@ -58,3 +72,5 @@ loading for free; keep using it.
 - Import-linter contracts catch accidental graph↔tools coupling early.
 - Keep rulebook actions in one flat enum shared between the typed schema and the
 LLM structured-output description to avoid drift.
+- Evaluation harness should test at the service level, not raw LLM outputs, so
+  deterministic fallback and OpenAI path share the same assertions.

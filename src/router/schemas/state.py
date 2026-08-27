@@ -15,6 +15,11 @@ class DisruptionEvent(BaseModel):
     origin: str | None = None
     destination: str | None = None
     customer_tier: str | None = None
+    sales: float | None = None
+    shipping_mode: str | None = None
+    category: str | None = None
+    delay_days: int | None = None
+    alternate_available: bool | None = None
 
 
 class RuleMatch(BaseModel):
@@ -25,6 +30,7 @@ class RuleMatch(BaseModel):
     action: str
     confidence: str
     reason: str
+    priority: int = 0
 
 
 class RouteRecommendation(BaseModel):

@@ -64,10 +64,10 @@ resume → publish flow.
 **Exit criteria:** `/route` stream emits node-enter/exit events; traces visible
 in LangSmith project.
 
-### Phase 5 — Evaluation + documentation
-- Layer 1 canonical eval with 15–20 scenarios covering each action class and
+### Phase 5 — Evaluation + documentation ✅
+- [x] Layer 1 canonical eval with 15 scenarios covering each action class and
 edge cases (no match, tie, critical escalation).
-- Publish MkDocs site; architecture pages, ADRs, evidence.
+- [x] Publish MkDocs site; architecture pages, ADRs, evidence.
 
 **Exit criteria:** `make eval` gates PRs; `mkdocs build --strict` passes.
 
