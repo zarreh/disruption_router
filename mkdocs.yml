@@ -1,0 +1,76 @@
+site_name: AI-Powered Shipment Disruption Router
+site_description: Grounded exception routing for logistics disruptions
+repo_url: https://github.com/zarreh/disruption_router
+edit_uri: edit/main/docs/
+
+exclude_docs: |
+  PLAN.md
+  HARVEST.md
+  generate_plots.py
+  assets/plot_style.mplstyle
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+
+plugins:
+  - search
+  - glightbox
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+nav:
+  - Home: index.md
+  - How it works:
+      - In plain language: how-it-works/in-plain-language.md
+      - The routing loop: how-it-works/routing-loop.md
+      - Grounding: how-it-works/grounding.md
+  - Architecture:
+      - Overview: architecture/overview.md
+      - State and flow: architecture/state-and-flow.md
+      - Tools: architecture/tools.md
+      - Decisions:
+          - Index: architecture/decisions/index.md
+          - D-A7-1 Structured clause lookup: architecture/decisions/D-A7-1-structured-clause-lookup.md
+          - D-A7-2 SQLite SqliteSaver: architecture/decisions/D-A7-2-sqlite-saver.md

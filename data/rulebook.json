@@ -1,0 +1,44 @@
+[
+  {
+    "id": "R-001",
+    "text": "Critical carrier failure: immediately re-route to backup carrier and notify customer.",
+    "action": "re-route",
+    "event_types": "carrier_failure",
+    "severities": "critical,high"
+  },
+  {
+    "id": "R-002",
+    "text": "High-severity weather or port delay on perishable goods: expedite via fastest available lane.",
+    "action": "expedite",
+    "event_types": "delay,weather,port_strike",
+    "severities": "high,critical"
+  },
+  {
+    "id": "R-003",
+    "text": "Shipment lost or damaged beyond repair: initiate claims process with carrier.",
+    "action": "claim",
+    "event_types": "lost,damage",
+    "severities": "medium,high,critical"
+  },
+  {
+    "id": "R-004",
+    "text": "Wrong route detected with no customer impact: cancel current leg and re-route.",
+    "action": "re-route",
+    "event_types": "wrong_route",
+    "severities": "low,medium"
+  },
+  {
+    "id": "R-005",
+    "text": "Low-severity delay on non-perishable standard tier: apply standard recovery procedure.",
+    "action": "standard_recovery",
+    "event_types": "delay",
+    "severities": "low,medium"
+  },
+  {
+    "id": "R-006",
+    "text": "Customer cancels order while shipment is still recoverable: cancel shipment.",
+    "action": "cancel",
+    "event_types": "cancel_request",
+    "severities": "low,medium,high"
+  }
+]

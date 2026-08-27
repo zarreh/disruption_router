@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.uv/
+
+# Environment and secrets
+.env
+.secrets.baseline
+
+# Data and artifacts
+data/*.db
+data/*.sqlite
+data/processed/
+!data/.gitkeep
+
+# Eval outputs
+evals/.results/
+evals/.cache/
+
+# Documentation build
+site/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/openapi.json
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Reference material (source notebooks, CSVs, rulebooks — kept local-only)
+reference/*
+!reference/.gitkeep
