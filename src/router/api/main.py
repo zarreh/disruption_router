@@ -3,6 +3,7 @@ from typing import Any
 
 from fastapi import FastAPI
 
+from router.api import reviews
 from router.graph.graph import graph
 from router.schemas.state import DisruptionEvent
 from router.settings import get_settings
@@ -20,6 +21,7 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+app.include_router(reviews.router)
 
 
 @app.get("/healthz")

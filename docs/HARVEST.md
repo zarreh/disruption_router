@@ -32,6 +32,14 @@ retrieved set and the action is supported by at least one matched clause.
 on grounding failure.
 - Added `src/router/tools/cost.py` stub for delay-cost estimation.
 
+## 2026-08-27 — Phase 3 HITL review queue (backend)
+
+- Added `src/router/api/reviews.py` with `GET /reviews` and `POST /reviews/{id}`.
+- `GET /reviews` enumerates thread IDs from the SQLite checkpoint DB and filters
+for snapshots with pending `interrupt()` tasks.
+- `POST /reviews/{id}` resumes the interrupted run with `Command(resume=...)`.
+- Added API test demonstrating submit → interrupt → resume → publish flow.
+
 ## Harvested patterns
 
 - A2's `AgentSettings` from `zarreh_agentkit` gives us OpenAI + LangSmith env

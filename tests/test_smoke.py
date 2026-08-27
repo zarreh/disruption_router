@@ -77,3 +77,27 @@ def test_judge_grounding_rejects_bogus_clause() -> None:
     result = judge_grounding(state)
     assert result["grounding_passed"] is False
     assert "C-999" in result["grounding_feedback"]
+
+
+def test_review_queue_lists_and_resumes() -> None:
+    thread_id = "S-REVIEW-001"
+    event = DisruptionEvent(
+        shipment_id=thread_id,
+        event_type="canceled",
+        severity="critical",
+        description="Order canceled",
+    )
+    # Trigger an interrupt for a critical cancellation.
+    try:
+        graph.invoke({"event": event.model_dump(), "messages": []}, {"configurable": {"thread_id": thread_id}})
+    except Exception:
+        pass
+
+    response = client.get("/reviews")
+    assert response.status_code == 200
+    reviews = response.json()
+    assert any(r["thread_id"] == thread_id for r in reviews)
+
+    resume = client.post(f"/reviews/{thread_id}", json={"decision": "approve"})
+    assert resume.status_code == 200
+    assert resume.json()["thread_id"] == thread_id

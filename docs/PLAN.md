@@ -47,10 +47,10 @@ penalty).
 10 canonical scenarios with grounded justifications.
 
 ### Phase 3 — HITL queue
-- Implement `/reviews` endpoint returning interrupted threads awaiting human
+- [x] Implement `/reviews` endpoint returning interrupted threads awaiting human
 decision.
-- Add `POST /reviews/{thread_id}/decision` to resume graph with override.
-- Reference UI pattern from `clinical_care_navigator/frontend`.
+- [x] Add `POST /reviews/{thread_id}` to resume graph with override.
+- [ ] Reference UI pattern from `clinical_care_navigator/frontend`.
 
 **Exit criteria:** Playwright or API test demonstrates submit → interrupt →
 resume → publish flow.
