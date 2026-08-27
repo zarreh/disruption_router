@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 from fastapi.testclient import TestClient
 
 from router.api.main import app
@@ -88,10 +90,9 @@ def test_review_queue_lists_and_resumes() -> None:
         description="Order canceled",
     )
     # Trigger an interrupt for a critical cancellation.
-    try:
-        graph.invoke({"event": event.model_dump(), "messages": []}, {"configurable": {"thread_id": thread_id}})
-    except Exception:
-        pass
+    config = {"configurable": {"thread_id": thread_id}}
+    with suppress(Exception):
+        graph.invoke({"event": event.model_dump(), "messages": []}, config)
 
     response = client.get("/reviews")
     assert response.status_code == 200

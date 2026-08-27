@@ -46,11 +46,11 @@ penalty).
 **Exit criteria:** Evaluation harness (`make eval`) shows ≥85% route accuracy on
 10 canonical scenarios with grounded justifications.
 
-### Phase 3 — HITL queue
+### Phase 3 — HITL queue ✅
 - [x] Implement `/reviews` endpoint returning interrupted threads awaiting human
 decision.
 - [x] Add `POST /reviews/{thread_id}` to resume graph with override.
-- [ ] Reference UI pattern from `clinical_care_navigator/frontend`.
+- [x] Minimal Next.js review UI under `frontend/`.
 
 **Exit criteria:** Playwright or API test demonstrates submit → interrupt →
 resume → publish flow.

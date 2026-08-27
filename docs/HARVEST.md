@@ -32,12 +32,14 @@ retrieved set and the action is supported by at least one matched clause.
 on grounding failure.
 - Added `src/router/tools/cost.py` stub for delay-cost estimation.
 
-## 2026-08-27 — Phase 3 HITL review queue (backend)
+## 2026-08-27 — Phase 3 HITL review queue
 
 - Added `src/router/api/reviews.py` with `GET /reviews` and `POST /reviews/{id}`.
 - `GET /reviews` enumerates thread IDs from the SQLite checkpoint DB and filters
 for snapshots with pending `interrupt()` tasks.
 - `POST /reviews/{id}` resumes the interrupted run with `Command(resume=...)`.
+- Added minimal Next.js frontend under `frontend/` with a `/reviews` page that
+lists pending reviews and submits decisions.
 - Added API test demonstrating submit → interrupt → resume → publish flow.
 
 ## Harvested patterns

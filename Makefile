@@ -36,11 +36,7 @@ docs-assets:
 	PYTHONPATH=. uv run python docs/generate_plots.py
 
 frontend-dev:
-	cd frontend && npm run dev
+	cd frontend && npm install && npm run dev
 
 frontend-build:
-	cd frontend && npm run build
-
-frontend-types:
-	PYTHONPATH=src uv run python -c "from router.api.main import app; import json; json.dump(app.openapi(), open('frontend/openapi.json', 'w'), indent=2)"
-	cd frontend && npm run gen:types
+	cd frontend && npm install && npm run build
