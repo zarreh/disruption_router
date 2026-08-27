@@ -20,6 +20,18 @@ into 6 policies and 22 routable clauses.
 - Aligned `RouteRecommendation.action` vocabulary with the source rulebook:
 `monitor | reroute | expedite | escalate_human | hold | cancel`.
 
+## 2026-08-27 — Phase 2 LLM router + grounding judge
+
+- Added `src/router/graph/llm.py` with `get_llm()` factory (returns `None` when
+no `ROUTER_OPENAI_API_KEY` is set).
+- Replaced deterministic vote in `route` with LLM structured output
+(`RouteRecommendation`) when a key is available, with deterministic fallback.
+- Added `judge_grounding` node that verifies cited clauses exist in the
+retrieved set and the action is supported by at least one matched clause.
+- Graph now loops `route -> judge_grounding -> route` up to `max_iterations`
+on grounding failure.
+- Added `src/router/tools/cost.py` stub for delay-cost estimation.
+
 ## Harvested patterns
 
 - A2's `AgentSettings` from `zarreh_agentkit` gives us OpenAI + LangSmith env

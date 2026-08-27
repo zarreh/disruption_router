@@ -45,3 +45,7 @@ class RouterState(BaseModel):
     candidate_action: str | None = None
     recommendation: RouteRecommendation | None = None
     human_decision: str | None = None
+    grounding_passed: bool = False
+    grounding_feedback: str = ""
+    iteration: int = 0
+    max_iterations: int = 3

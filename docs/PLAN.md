@@ -35,12 +35,12 @@ versioned, typed JSON schema.
 **Exit criteria:** `make data` regenerates `data/rulebook.json`; rulebook tests
 assert every clause has id/text/action/event_types/severities.
 
-### Phase 2 — Reasoning nodes
-- Replace deterministic vote in `route` with an LLM node that generates
+### Phase 2 — Reasoning nodes ✅
+- [x] Replace deterministic vote in `route` with an LLM node that generates
 `RouteRecommendation` via Pydantic structured output.
-- Add grounding: recommendation must cite clause IDs; a judge node checks that
+- [x] Add grounding: recommendation must cite clause IDs; a judge node checks that
 cited clauses exist and support the action.
-- Add cost/impact estimation tool stub (carrier delay cost, customer-tier
+- [x] Add cost/impact estimation tool stub (carrier delay cost, customer-tier
 penalty).
 
 **Exit criteria:** Evaluation harness (`make eval`) shows ≥85% route accuracy on

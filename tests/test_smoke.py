@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
 
 from router.api.main import app
-from router.graph.graph import graph
-from router.schemas.state import DisruptionEvent, RouteRecommendation
+from router.graph.graph import graph, judge_grounding
+from router.schemas.state import DisruptionEvent, RouteRecommendation, RuleMatch
 from router.tools.rulebook import load_rulebook, lookup_clauses
 
 client = TestClient(app)
@@ -49,3 +49,31 @@ def test_graph_routes_without_hitl() -> None:
     recommendation = RouteRecommendation.model_validate(result["recommendation"])
     assert recommendation.action == "monitor"
     assert recommendation.confidence >= 0.7
+
+
+def test_judge_grounding_rejects_bogus_clause() -> None:
+    event = DisruptionEvent(
+        shipment_id="S-002",
+        event_type="delay",
+        severity="low",
+        description="Minor delay",
+    )
+    bad_rec = RouteRecommendation(
+        action="monitor",
+        confidence=0.9,
+        justification="Bogus justification.",
+        matched_clauses=[
+            RuleMatch(
+                clause_id="C-999",
+                clause_text="Nonexistent clause.",
+                action="monitor",
+                confidence="high",
+                reason="None",
+            )
+        ],
+        needs_human_review=False,
+    )
+    state = type("State", (), {"event": event, "recommendation": bad_rec})()
+    result = judge_grounding(state)
+    assert result["grounding_passed"] is False
+    assert "C-999" in result["grounding_feedback"]
