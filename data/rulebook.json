@@ -1,44 +1,300 @@
-[
-  {
-    "id": "R-001",
-    "text": "Critical carrier failure: immediately re-route to backup carrier and notify customer.",
-    "action": "re-route",
-    "event_types": "carrier_failure",
-    "severities": "critical,high"
-  },
-  {
-    "id": "R-002",
-    "text": "High-severity weather or port delay on perishable goods: expedite via fastest available lane.",
-    "action": "expedite",
-    "event_types": "delay,weather,port_strike",
-    "severities": "high,critical"
-  },
-  {
-    "id": "R-003",
-    "text": "Shipment lost or damaged beyond repair: initiate claims process with carrier.",
-    "action": "claim",
-    "event_types": "lost,damage",
-    "severities": "medium,high,critical"
-  },
-  {
-    "id": "R-004",
-    "text": "Wrong route detected with no customer impact: cancel current leg and re-route.",
-    "action": "re-route",
-    "event_types": "wrong_route",
-    "severities": "low,medium"
-  },
-  {
-    "id": "R-005",
-    "text": "Low-severity delay on non-perishable standard tier: apply standard recovery procedure.",
-    "action": "standard_recovery",
-    "event_types": "delay",
-    "severities": "low,medium"
-  },
-  {
-    "id": "R-006",
-    "text": "Customer cancels order while shipment is still recoverable: cancel shipment.",
-    "action": "cancel",
-    "event_types": "cancel_request",
-    "severities": "low,medium,high"
-  }
-]
+{
+  "version": "1.0.0",
+  "source": "reference/logistics_policy_rulebook.txt",
+  "generated_at": "2026-08-27T16:39:17.510358+00:00",
+  "policies": [
+    {
+      "id": "POL-001",
+      "name": "Weather Disruption Protocol",
+      "scope": "Applies when a delivery status indicates a delay where adverse weather conditions are\nidentified as the primary cause by carrier reports or meteorological alerts.",
+      "standard_action": "Reroute",
+      "raw_text": "Scope: Applies when a delivery status indicates a delay where adverse weather conditions are\nidentified as the primary cause by carrier reports or meteorological alerts.\nStandard Action: Reroute\nDecision Matrix:\n- Delay < 3 days: Monitor status and hold shipment at the current hub. Do not initiate rerouting.\n- Delay 3-5 days: Initiate reroute via alternate regional hub if route availability exceeds 80%.\n- Delay > 5 days: Immediate escalation to the senior dispatch department for direct carrier negotiation.\n\nGeographic Exceptions:\n- Western Europe: Mandatory reroute via Frankfurt Hub.\n- North America: Mandatory reroute via Chicago Distribution Center.\n- South America: Hold at São Paulo Hub and initiate customer delay notification."
+    },
+    {
+      "id": "POL-002",
+      "name": "Standard Late Delivery Protocol",
+      "scope": "Triggered when a high risk of late delivery is identified, and the projected delay is\nbetween 2 and 5 days.",
+      "standard_action": "Reroute",
+      "raw_text": "Scope: Triggered when a high risk of late delivery is identified, and the projected delay is\nbetween 2 and 5 days.\nStandard Action: Reroute\n\nOperational Rules:\n1. Perform a regional lookup for alternate carrier routes.\n2. If an alternate exists: Initiate reroute and issue formal carrier notification.\n3. If no alternate: Change status to \"Hold\" and upgrade shipping mode to \"Expedited.\"\n4. High-Value Clause: Any shipment with a sales value exceeding $3,000 bypasses standard\n   checks and is automatically upgraded to \"Expedited\" shipping."
+    },
+    {
+      "id": "POL-003",
+      "name": "Critical Escalation Policy",
+      "scope": "Triggered by terminal status errors, shipping cancellations, or extreme delays.",
+      "standard_action": "Management Intervention Required",
+      "raw_text": "Scope: Triggered by terminal status errors, shipping cancellations, or extreme delays.\nStandard Action: Management Intervention Required\nEscalation Criteria:\n- Delivery Status is \"Shipping canceled.\"\n- Total delay exceeds 5 calendar days.\n- Sales value > $3,000 AND high late-delivery risk.\n- Corporate customer SLA breach is imminent (less than 4 hours to breach).\n\nResponse Time SLAs:\n- Corporate Customers: Resolution or status update required within 30 minutes.\n- Consumer Customers: Resolution or status update required within 120 minutes."
+    },
+    {
+      "id": "POL-004",
+      "name": "Shipping Mode SLA Commitments",
+      "scope": "Defines the threshold for service level agreement (SLA) breaches based on the\ncustomer's selected shipping tier.",
+      "standard_action": "",
+      "raw_text": "Scope: Defines the threshold for service level agreement (SLA) breaches based on the\ncustomer's selected shipping tier.\nCalculation Logic: Delay Gap = (Projected Delivery Date - Scheduled Delivery Date)\n\nSLA Tier Matrix:\n- Same Day: Scheduled 1 day, Tolerance 0 days, Action on Breach: Expedite\n- First Class: Scheduled 2 days, Tolerance 1 day, Action on Breach: Expedite\n- Second Class: Scheduled 4 days, Tolerance 2 days, Action on Breach: Reroute\n- Standard Class: Scheduled 7 days, Tolerance 3 days, Action on Breach: Hold\n\nProactive Monitoring: Shipments within 1 day of their specific tolerance threshold must be\nflagged for immediate priority review by the dispatch team."
+    },
+    {
+      "id": "POL-005",
+      "name": "Customer Segment Priority Matrix",
+      "scope": "Determines urgency and resource allocation during routing conflicts, limited carrier\ncapacity, or regional disruptions.",
+      "standard_action": "",
+      "raw_text": "Scope: Determines urgency and resource allocation during routing conflicts, limited carrier\ncapacity, or regional disruptions.\n\nPriority Levels:\n- Corporate: Priority High, Escalation Window 30 Minutes\n- Home Office: Priority Medium, Escalation Window 90 Minutes\n- Consumer: Priority Medium, Escalation Window 120 Minutes\n\nOperational Rules:\n1. Corporate customers receive first-priority for limited alternate route capacity and container space.\n2. Consumer orders strictly follow the Standard Late Delivery Protocol (POL-002).\n3. Home Office orders are managed under Consumer protocols unless the total order value\n   exceeds $2,000, at which point they inherit Corporate priority status."
+    },
+    {
+      "id": "POL-006",
+      "name": "Special Cargo Handling Protocols",
+      "scope": "Overrides standard routing procedures based on specific product category requirements\nor environmental sensitivities.",
+      "standard_action": "",
+      "raw_text": "Scope: Overrides standard routing procedures based on specific product category requirements\nor environmental sensitivities.\n\nCategory Constraints:\n- Electronics: Requires temperature-controlled routing. Initiate reroute immediately if the\n  delay exceeds 2 days to protect sensitive components.\n- Furniture: Bulk handling priority. Delays up to 5 days are tolerable; rerouting should be\n  avoided due to significant transit and oversized handling costs.\n- Clothing: Seasonal sensitivity. If delivery is within 7 days of a seasonal transition\n  (e.g., holiday periods), upgrade to Expedited.\n- Sports: Follow standard handling procedures.\n- Books: Lowest priority. Use as \"filler\" capacity on alternate routes where weight limits allow."
+    }
+  ],
+  "clauses": [
+    {
+      "id": "C-001A",
+      "policy_id": "POL-001",
+      "text": "Weather-related delay under 3 days: monitor status and hold at current hub.",
+      "action": "monitor",
+      "event_types": "weather,delay",
+      "severities": "low",
+      "conditions": {
+        "max_delay_days": 2
+      }
+    },
+    {
+      "id": "C-001B",
+      "policy_id": "POL-001",
+      "text": "Weather-related delay 3-5 days: reroute via alternate regional hub.",
+      "action": "reroute",
+      "event_types": "weather,delay",
+      "severities": "medium",
+      "conditions": {
+        "min_delay_days": 3,
+        "max_delay_days": 5
+      }
+    },
+    {
+      "id": "C-001C",
+      "policy_id": "POL-001",
+      "text": "Weather-related delay over 5 days: escalate to senior dispatch.",
+      "action": "escalate_human",
+      "event_types": "weather,delay",
+      "severities": "high,critical",
+      "conditions": {
+        "min_delay_days": 6
+      }
+    },
+    {
+      "id": "C-002A",
+      "policy_id": "POL-002",
+      "text": "Late delivery 2-5 days with alternate carrier available: reroute.",
+      "action": "reroute",
+      "event_types": "late_delivery,delay",
+      "severities": "medium,high",
+      "conditions": {
+        "min_delay_days": 2,
+        "max_delay_days": 5
+      }
+    },
+    {
+      "id": "C-002B",
+      "policy_id": "POL-002",
+      "text": "Late delivery 2-5 days with no alternate carrier: hold and expedite.",
+      "action": "expedite",
+      "event_types": "late_delivery,delay",
+      "severities": "medium,high",
+      "conditions": {
+        "min_delay_days": 2,
+        "max_delay_days": 5,
+        "alternate_available": false
+      }
+    },
+    {
+      "id": "C-002C",
+      "policy_id": "POL-002",
+      "text": "High-value shipment (sales > $3,000) with late delivery risk: expedite.",
+      "action": "expedite",
+      "event_types": "late_delivery,delay",
+      "severities": "medium,high,critical",
+      "conditions": {
+        "sales_above": 3000
+      }
+    },
+    {
+      "id": "C-003A",
+      "policy_id": "POL-003",
+      "text": "Shipping canceled: management intervention required.",
+      "action": "escalate_human",
+      "event_types": "canceled",
+      "severities": "high,critical",
+      "conditions": {}
+    },
+    {
+      "id": "C-003B",
+      "policy_id": "POL-003",
+      "text": "Extreme delay exceeding 5 calendar days: management intervention required.",
+      "action": "escalate_human",
+      "event_types": "delay,late_delivery",
+      "severities": "critical",
+      "conditions": {
+        "min_delay_days": 6
+      }
+    },
+    {
+      "id": "C-003C",
+      "policy_id": "POL-003",
+      "text": "High-value shipment with late delivery risk: escalate for management review.",
+      "action": "escalate_human",
+      "event_types": "late_delivery,delay",
+      "severities": "high,critical",
+      "conditions": {
+        "sales_above": 3000
+      }
+    },
+    {
+      "id": "C-003D",
+      "policy_id": "POL-003",
+      "text": "Corporate customer SLA breach imminent (<4 hours): escalate immediately.",
+      "action": "escalate_human",
+      "event_types": "sla_breach",
+      "severities": "critical",
+      "conditions": {
+        "customer_segment": "Corporate",
+        "hours_to_breach": 4
+      }
+    },
+    {
+      "id": "C-004A",
+      "policy_id": "POL-004",
+      "text": "Same Day shipping mode SLA breach: expedite.",
+      "action": "expedite",
+      "event_types": "sla_breach,delay",
+      "severities": "high,critical",
+      "conditions": {
+        "shipping_mode": "Same Day"
+      }
+    },
+    {
+      "id": "C-004B",
+      "policy_id": "POL-004",
+      "text": "First Class shipping mode SLA breach: expedite.",
+      "action": "expedite",
+      "event_types": "sla_breach,delay",
+      "severities": "high",
+      "conditions": {
+        "shipping_mode": "First Class"
+      }
+    },
+    {
+      "id": "C-004C",
+      "policy_id": "POL-004",
+      "text": "Second Class shipping mode SLA breach: reroute.",
+      "action": "reroute",
+      "event_types": "sla_breach,delay",
+      "severities": "medium,high",
+      "conditions": {
+        "shipping_mode": "Second Class"
+      }
+    },
+    {
+      "id": "C-004D",
+      "policy_id": "POL-004",
+      "text": "Standard Class shipping mode SLA breach: hold.",
+      "action": "hold",
+      "event_types": "sla_breach,delay",
+      "severities": "low,medium",
+      "conditions": {
+        "shipping_mode": "Standard Class"
+      }
+    },
+    {
+      "id": "C-004E",
+      "policy_id": "POL-004",
+      "text": "Shipment within 1 day of SLA tolerance threshold: monitor with priority review.",
+      "action": "monitor",
+      "event_types": "delay",
+      "severities": "low,medium",
+      "conditions": {
+        "days_to_tolerance": 1
+      }
+    },
+    {
+      "id": "C-005A",
+      "policy_id": "POL-005",
+      "text": "Corporate customer in routing conflict or capacity shortage: prioritize reroute/expedite.",
+      "action": "reroute",
+      "event_types": "routing_conflict,capacity_issue",
+      "severities": "medium,high",
+      "conditions": {
+        "customer_segment": "Corporate"
+      }
+    },
+    {
+      "id": "C-005B",
+      "policy_id": "POL-005",
+      "text": "Home Office order over $2,000: inherit Corporate priority handling.",
+      "action": "reroute",
+      "event_types": "routing_conflict,capacity_issue,late_delivery",
+      "severities": "medium,high",
+      "conditions": {
+        "customer_segment": "Home Office",
+        "sales_above": 2000
+      }
+    },
+    {
+      "id": "C-006A",
+      "policy_id": "POL-006",
+      "text": "Electronics delay over 2 days: reroute via temperature-controlled lane.",
+      "action": "reroute",
+      "event_types": "delay,electronics",
+      "severities": "medium,high",
+      "conditions": {
+        "category": "Electronics",
+        "min_delay_days": 3
+      }
+    },
+    {
+      "id": "C-006B",
+      "policy_id": "POL-006",
+      "text": "Furniture delay up to 5 days: monitor; avoid rerouting due to bulk cost.",
+      "action": "monitor",
+      "event_types": "delay,furniture",
+      "severities": "low,medium",
+      "conditions": {
+        "category": "Furniture",
+        "max_delay_days": 5
+      }
+    },
+    {
+      "id": "C-006C",
+      "policy_id": "POL-006",
+      "text": "Clothing within 7 days of seasonal transition: expedite.",
+      "action": "expedite",
+      "event_types": "delay,clothing",
+      "severities": "medium,high",
+      "conditions": {
+        "category": "Clothing",
+        "days_to_season": 7
+      }
+    },
+    {
+      "id": "C-006D",
+      "policy_id": "POL-006",
+      "text": "Sports goods: follow standard handling procedures.",
+      "action": "monitor",
+      "event_types": "delay,sports",
+      "severities": "low,medium",
+      "conditions": {
+        "category": "Sports"
+      }
+    },
+    {
+      "id": "C-006E",
+      "policy_id": "POL-006",
+      "text": "Books: lowest priority filler capacity on alternate routes.",
+      "action": "monitor",
+      "event_types": "delay,books",
+      "severities": "low",
+      "conditions": {
+        "category": "Books"
+      }
+    }
+  ]
+}

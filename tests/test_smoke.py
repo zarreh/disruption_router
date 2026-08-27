@@ -16,18 +16,20 @@ def test_healthz() -> None:
 
 def test_rulebook_loads() -> None:
     rulebook = load_rulebook("data/rulebook.json")
-    assert len(rulebook) >= 1
-    for clause in rulebook:
-        assert "id" in clause
-        assert "text" in clause
-        assert "action" in clause
-        assert "event_types" in clause
-        assert "severities" in clause
+    assert len(rulebook.clauses) >= 1
+    assert len(rulebook.policies) == 6
+    for clause in rulebook.clauses:
+        assert clause.id
+        assert clause.text
+        assert clause.action
+        assert clause.event_types
+        assert clause.severities
+        assert clause.policy_id.startswith("POL-")
 
 
 def test_lookup_clauses_match() -> None:
-    matches = lookup_clauses("carrier_failure", "critical", path="data/rulebook.json")
-    assert any(m.action == "re-route" for m in matches)
+    matches = lookup_clauses("canceled", "critical", path="data/rulebook.json")
+    assert any(m.action == "escalate_human" for m in matches)
 
 
 def test_lookup_clauses_empty() -> None:
@@ -45,5 +47,5 @@ def test_graph_routes_without_hitl() -> None:
     config = {"configurable": {"thread_id": event.shipment_id}}
     result = graph.invoke({"event": event.model_dump(), "messages": []}, config)
     recommendation = RouteRecommendation.model_validate(result["recommendation"])
-    assert recommendation.action == "standard_recovery"
+    assert recommendation.action == "monitor"
     assert recommendation.confidence >= 0.7

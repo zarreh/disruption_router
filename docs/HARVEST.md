@@ -10,8 +10,20 @@
 - Walking-skeleton graph compiles with `ingest → retrieve → route → publish` and
 conditional HITL edge.
 
+## 2026-08-27 — Phase 1 rulebook as code
+
+- Added `src/router/schemas/rulebook.py` with typed `Policy`, `Clause`, and
+`Rulebook` models.
+- Added `data/build_rulebook.py` that parses `reference/logistics_policy_rulebook.txt`
+into 6 policies and 22 routable clauses.
+- `make data` now regenerates `data/rulebook.json` deterministically.
+- Aligned `RouteRecommendation.action` vocabulary with the source rulebook:
+`monitor | reroute | expedite | escalate_human | hold | cancel`.
+
 ## Harvested patterns
 
 - A2's `AgentSettings` from `zarreh_agentkit` gives us OpenAI + LangSmith env
 loading for free; keep using it.
 - Import-linter contracts catch accidental graph↔tools coupling early.
+- Keep rulebook actions in one flat enum shared between the typed schema and the
+LLM structured-output description to avoid drift.

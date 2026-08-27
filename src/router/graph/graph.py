@@ -38,9 +38,9 @@ def route(state: RouterState) -> dict[str, Any]:
     if not matches:
         return {
             "recommendation": RouteRecommendation(
-                action="standard_recovery",
+                action="monitor",
                 confidence=0.5,
-                justification="No specific clause matched; falling back to standard recovery.",
+                justification="No specific clause matched; falling back to monitor.",
                 matched_clauses=[],
                 needs_human_review=True,
             )
@@ -92,7 +92,7 @@ def human_review(state: RouterState) -> dict[str, Any]:
 def publish(state: RouterState) -> dict[str, Any]:
     """Emit the final routed decision."""
     rec = state.recommendation
-    decision = state.human_decision or (rec.action if rec else "standard_recovery")
+    decision = state.human_decision or (rec.action if rec else "monitor")
     return {"messages": [{"role": "assistant", "content": f"Final action: {decision}"}]}
 
 

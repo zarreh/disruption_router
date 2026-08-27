@@ -30,7 +30,7 @@ class RuleMatch(BaseModel):
 class RouteRecommendation(BaseModel):
     """Structured output from the router."""
 
-    action: str = Field(description="re-route | expedite | claim | cancel | standard_recovery")
+    action: str = Field(description="monitor | reroute | expedite | escalate_human | hold | cancel")
     confidence: float = Field(ge=0.0, le=1.0)
     justification: str
     matched_clauses: list[RuleMatch]
